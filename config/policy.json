@@ -1,0 +1,252 @@
+{
+  "policy_version": "2026.1",
+  "id_year": 2026,
+  "policy_effective_from": "2020-01-01",
+  "customer_types": [
+    {
+      "customer_type_id": "INDIVIDUAL",
+      "description": "Natural person account holder",
+      "requires_beneficial_owner": 0
+    },
+    {
+      "customer_type_id": "BUSINESS",
+      "description": "Legal entity account holder",
+      "requires_beneficial_owner": 1
+    }
+  ],
+  "risk_levels": [
+    "LOW",
+    "MEDIUM",
+    "HIGH"
+  ],
+  "risk_score_thresholds": {
+    "MEDIUM": 40,
+    "HIGH": 65
+  },
+  "document_types": [
+    {
+      "document_type_code": "ID_PROOF",
+      "description": "Government identity proof (account holder or authorised signatory)",
+      "validity_days": 3650
+    },
+    {
+      "document_type_code": "ADDRESS_PROOF",
+      "description": "Residential or registered address proof",
+      "validity_days": 365
+    },
+    {
+      "document_type_code": "TAX_PROOF",
+      "description": "Tax identification proof (non-expiring)",
+      "validity_days": null
+    },
+    {
+      "document_type_code": "SOURCE_OF_FUNDS",
+      "description": "Source-of-funds declaration (enhanced due diligence)",
+      "validity_days": 365
+    },
+    {
+      "document_type_code": "BUSINESS_REGISTRATION",
+      "description": "Certificate of incorporation / business registration",
+      "validity_days": 1825
+    },
+    {
+      "document_type_code": "OWNERSHIP_DECLARATION",
+      "description": "Signed beneficial-ownership declaration",
+      "validity_days": 365
+    }
+  ],
+  "requirements": {
+    "INDIVIDUAL": {
+      "LOW": [
+        "ID_PROOF",
+        "ADDRESS_PROOF"
+      ],
+      "MEDIUM": [
+        "ID_PROOF",
+        "ADDRESS_PROOF",
+        "TAX_PROOF"
+      ],
+      "HIGH": [
+        "ID_PROOF",
+        "ADDRESS_PROOF",
+        "TAX_PROOF",
+        "SOURCE_OF_FUNDS"
+      ]
+    },
+    "BUSINESS": {
+      "LOW": [
+        "BUSINESS_REGISTRATION",
+        "ADDRESS_PROOF",
+        "OWNERSHIP_DECLARATION"
+      ],
+      "MEDIUM": [
+        "BUSINESS_REGISTRATION",
+        "ADDRESS_PROOF",
+        "OWNERSHIP_DECLARATION",
+        "TAX_PROOF"
+      ],
+      "HIGH": [
+        "BUSINESS_REGISTRATION",
+        "ADDRESS_PROOF",
+        "OWNERSHIP_DECLARATION",
+        "TAX_PROOF",
+        "SOURCE_OF_FUNDS"
+      ]
+    }
+  },
+  "ownership_total_pct": 100.0,
+  "verification": {
+    "min_scan_quality": 35,
+    "inconclusive_below_quality": 45,
+    "auto_verify_min_quality": 85
+  },
+  "review": {
+    "review_year": 2026,
+    "period_months": {
+      "HIGH": 6,
+      "MEDIUM": 12,
+      "LOW": 24
+    },
+    "open_lead_days": 30,
+    "schedule_lead_days": 60
+  },
+  "alerts": {
+    "expiry_lead_days": [
+      90,
+      60,
+      30,
+      7
+    ],
+    "severity": {
+      "90": "LOW",
+      "60": "LOW",
+      "30": "MEDIUM",
+      "7": "HIGH",
+      "EXPIRED": "HIGH",
+      "REVIEW_OVERDUE": "HIGH"
+    }
+  },
+  "enums": {
+    "customer_status": [
+      "PENDING",
+      "APPROVED",
+      "ON_HOLD"
+    ],
+    "decision": [
+      "PENDING",
+      "APPROVED",
+      "ON_HOLD"
+    ],
+    "document_status": [
+      "PENDING_VERIFICATION",
+      "VALID",
+      "REJECTED",
+      "EXPIRED",
+      "SUPERSEDED"
+    ],
+    "verification_outcome": [
+      "VERIFIED",
+      "REJECTED",
+      "INCONCLUSIVE"
+    ],
+    "verification_reason": [
+      "OK",
+      "NAME_MISMATCH",
+      "ILLEGIBLE_SCAN",
+      "EXPIRED_AT_SUBMISSION",
+      "LOW_CONFIDENCE"
+    ],
+    "review_type": [
+      "PERIODIC"
+    ],
+    "review_status": [
+      "SCHEDULED",
+      "OPEN",
+      "IN_PROGRESS",
+      "ESCALATED",
+      "COMPLETED"
+    ],
+    "review_resolution": [
+      "NO_CHANGE",
+      "EVIDENCE_REFRESH_REQUESTED",
+      "ESCALATED_TO_COMPLIANCE",
+      "EXIT_RECOMMENDED"
+    ],
+    "alert_type": [
+      "DOCUMENT_EXPIRING",
+      "DOCUMENT_EXPIRED",
+      "REVIEW_OVERDUE"
+    ],
+    "alert_status": [
+      "OPEN",
+      "ACKNOWLEDGED",
+      "RESOLVED",
+      "SUPERSEDED"
+    ],
+    "alert_event_type": [
+      "CREATED",
+      "ACKNOWLEDGED",
+      "RESOLVED",
+      "SUPERSEDED"
+    ],
+    "alert_severity": [
+      "LOW",
+      "MEDIUM",
+      "HIGH"
+    ],
+    "staff_role": [
+      "SYSTEM",
+      "OPERATIONS_ANALYST",
+      "RISK_COMPLIANCE_REVIEWER",
+      "SYSTEM_ADMINISTRATOR"
+    ],
+    "actor_type": [
+      "CUSTOMER",
+      "STAFF",
+      "SYSTEM"
+    ],
+    "rating_reason": [
+      "INITIAL",
+      "RE_RATING"
+    ],
+    "country_code": [
+      "IN",
+      "US",
+      "GB",
+      "SG",
+      "DE",
+      "AE",
+      "BR",
+      "NG"
+    ]
+  },
+  "review_transitions": {
+    "SCHEDULED": [
+      "OPEN"
+    ],
+    "OPEN": [
+      "IN_PROGRESS"
+    ],
+    "IN_PROGRESS": [
+      "ESCALATED",
+      "COMPLETED"
+    ],
+    "ESCALATED": [
+      "COMPLETED"
+    ],
+    "COMPLETED": []
+  },
+  "alert_transitions": {
+    "OPEN": [
+      "ACKNOWLEDGED",
+      "RESOLVED",
+      "SUPERSEDED"
+    ],
+    "ACKNOWLEDGED": [
+      "RESOLVED",
+      "SUPERSEDED"
+    ],
+    "RESOLVED": [],
+    "SUPERSEDED": []
+  }
+}

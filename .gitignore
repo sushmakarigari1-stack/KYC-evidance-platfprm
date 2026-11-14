@@ -1,0 +1,6 @@
+*.db
+*.pyc
+.pytest_cache/
+.venv/
+__pycache__/
+kyc_app.db

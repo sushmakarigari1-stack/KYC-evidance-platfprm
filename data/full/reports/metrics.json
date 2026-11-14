@@ -1,0 +1,389 @@
+{
+ "alerts": {
+  "by_status": {
+   "ACKNOWLEDGED": {
+    "count": 1154,
+    "pct": 26.69
+   },
+   "OPEN": {
+    "count": 1400,
+    "pct": 32.38
+   },
+   "RESOLVED": {
+    "count": 740,
+    "pct": 17.12
+   },
+   "SUPERSEDED": {
+    "count": 1029,
+    "pct": 23.8
+   }
+  },
+  "by_type": {
+   "DOCUMENT_EXPIRED": {
+    "count": 1029,
+    "pct": 23.8
+   },
+   "DOCUMENT_EXPIRING": {
+    "count": 2784,
+    "pct": 64.4
+   },
+   "REVIEW_OVERDUE": {
+    "count": 510,
+    "pct": 11.8
+   }
+  },
+  "configured_lead_days": [
+   90,
+   60,
+   30,
+   7
+  ],
+  "expiring_by_lead_days": {
+   "30": {
+    "count": 377,
+    "pct": 13.54
+   },
+   "60": {
+    "count": 554,
+    "pct": 19.9
+   },
+   "7": {
+    "count": 1267,
+    "pct": 45.51
+   },
+   "90": {
+    "count": 586,
+    "pct": 21.05
+   }
+  }
+ },
+ "as_of_date": "2026-11-13",
+ "audit": {
+  "by_action": {
+   "ALERT_ACKNOWLEDGED": {
+    "count": 1819,
+    "pct": 1.93
+   },
+   "ALERT_CREATED": {
+    "count": 4323,
+    "pct": 4.59
+   },
+   "ALERT_RESOLVED": {
+    "count": 740,
+    "pct": 0.78
+   },
+   "ALERT_SUPERSEDED": {
+    "count": 1029,
+    "pct": 1.09
+   },
+   "CUSTOMER_ONBOARDED": {
+    "count": 8000,
+    "pct": 8.49
+   },
+   "DECISION_RECORDED": {
+    "count": 16101,
+    "pct": 17.08
+   },
+   "DOCUMENT_SUBMITTED": {
+    "count": 20000,
+    "pct": 21.21
+   },
+   "OWNERSHIP_RECORDED": {
+    "count": 2059,
+    "pct": 2.18
+   },
+   "REVIEW_COMPLETED": {
+    "count": 2618,
+    "pct": 2.78
+   },
+   "REVIEW_ESCALATED": {
+    "count": 262,
+    "pct": 0.28
+   },
+   "REVIEW_IN_PROGRESS": {
+    "count": 2793,
+    "pct": 2.96
+   },
+   "REVIEW_OPEN": {
+    "count": 2837,
+    "pct": 3.01
+   },
+   "REVIEW_SCHEDULED": {
+    "count": 3000,
+    "pct": 3.18
+   },
+   "RISK_RATED": {
+    "count": 8352,
+    "pct": 8.86
+   },
+   "VERIFICATION_RECORDED": {
+    "count": 20344,
+    "pct": 21.58
+   }
+  },
+  "events": 94277
+ },
+ "customers": {
+  "by_country": {
+   "AE": {
+    "count": 690,
+    "pct": 8.62
+   },
+   "BR": {
+    "count": 305,
+    "pct": 3.81
+   },
+   "DE": {
+    "count": 393,
+    "pct": 4.91
+   },
+   "GB": {
+    "count": 649,
+    "pct": 8.11
+   },
+   "IN": {
+    "count": 4359,
+    "pct": 54.49
+   },
+   "NG": {
+    "count": 239,
+    "pct": 2.99
+   },
+   "SG": {
+    "count": 568,
+    "pct": 7.1
+   },
+   "US": {
+    "count": 797,
+    "pct": 9.96
+   }
+  },
+  "by_risk": {
+   "HIGH": {
+    "count": 266,
+    "pct": 3.33
+   },
+   "LOW": {
+    "count": 6570,
+    "pct": 82.12
+   },
+   "MEDIUM": {
+    "count": 1164,
+    "pct": 14.55
+   }
+  },
+  "by_status": {
+   "APPROVED": {
+    "count": 6397,
+    "pct": 79.96
+   },
+   "ON_HOLD": {
+    "count": 693,
+    "pct": 8.66
+   },
+   "PENDING": {
+    "count": 910,
+    "pct": 11.38
+   }
+  },
+  "by_type": {
+   "BUSINESS": {
+    "count": 1000,
+    "pct": 12.5
+   },
+   "INDIVIDUAL": {
+    "count": 7000,
+    "pct": 87.5
+   }
+  },
+  "latest_decision_completeness": {
+   "100%": {
+    "count": 6357,
+    "pct": 79.46
+   },
+   "50-74%": {
+    "count": 572,
+    "pct": 7.15
+   },
+   "75-99%": {
+    "count": 150,
+    "pct": 1.88
+   },
+   "<50%": {
+    "count": 921,
+    "pct": 11.51
+   }
+  }
+ },
+ "documents": {
+  "avg_documents_per_customer": 2.5,
+  "by_status": {
+   "EXPIRED": {
+    "count": 771,
+    "pct": 3.85
+   },
+   "PENDING_VERIFICATION": {
+    "count": 403,
+    "pct": 2.02
+   },
+   "REJECTED": {
+    "count": 904,
+    "pct": 4.52
+   },
+   "SUPERSEDED": {
+    "count": 1071,
+    "pct": 5.36
+   },
+   "VALID": {
+    "count": 16851,
+    "pct": 84.25
+   }
+  },
+  "by_type": {
+   "ADDRESS_PROOF": {
+    "count": 8704,
+    "pct": 43.52
+   },
+   "BUSINESS_REGISTRATION": {
+    "count": 1083,
+    "pct": 5.42
+   },
+   "ID_PROOF": {
+    "count": 7379,
+    "pct": 36.9
+   },
+   "OWNERSHIP_DECLARATION": {
+    "count": 1088,
+    "pct": 5.44
+   },
+   "SOURCE_OF_FUNDS": {
+    "count": 287,
+    "pct": 1.44
+   },
+   "TAX_PROOF": {
+    "count": 1459,
+    "pct": 7.29
+   }
+  },
+  "expired_documents": 771,
+  "superseded_chain_links": 1797
+ },
+ "ownership": {
+  "business_customers": 1000,
+  "missing_ownership_records": 43,
+  "over_100": 40,
+  "owners_in_multiple_businesses": 195,
+  "owners_total": 1839,
+  "reconciling_to_100": 917,
+  "with_ownership_records": 957
+ },
+ "reviews": {
+  "by_status": {
+   "COMPLETED": {
+    "count": 2618,
+    "pct": 87.27
+   },
+   "ESCALATED": {
+    "count": 7,
+    "pct": 0.23
+   },
+   "IN_PROGRESS": {
+    "count": 168,
+    "pct": 5.6
+   },
+   "OPEN": {
+    "count": 44,
+    "pct": 1.47
+   },
+   "SCHEDULED": {
+    "count": 163,
+    "pct": 5.43
+   }
+  },
+  "completed_late": 424,
+  "overdue_still_open": 86,
+  "overdue_total": 510,
+  "resolution_mix": {
+   "ESCALATED_TO_COMPLIANCE": {
+    "count": 227,
+    "pct": 8.67
+   },
+   "EVIDENCE_REFRESH_REQUESTED": {
+    "count": 470,
+    "pct": 17.95
+   },
+   "EXIT_RECOMMENDED": {
+    "count": 43,
+    "pct": 1.64
+   },
+   "NONE": {
+    "count": 40,
+    "pct": 1.53
+   },
+   "NO_CHANGE": {
+    "count": 1838,
+    "pct": 70.21
+   }
+  }
+ },
+ "row_counts": {
+  "alert": 4323,
+  "alert_event": 7911,
+  "audit_event": 94277,
+  "beneficial_owner": 1839,
+  "customer": 8000,
+  "customer_decision": 16101,
+  "customer_type": 2,
+  "document": 20000,
+  "document_type": 6,
+  "kyc_requirement": 21,
+  "ownership_link": 2059,
+  "review_case": 3000,
+  "review_case_event": 11510,
+  "risk_rating": 8352,
+  "staff_user": 18,
+  "verification": 20344
+ },
+ "verification": {
+  "attempts": 20344,
+  "by_outcome": {
+   "INCONCLUSIVE": {
+    "count": 747,
+    "pct": 3.67
+   },
+   "REJECTED": {
+    "count": 904,
+    "pct": 4.44
+   },
+   "VERIFIED": {
+    "count": 18693,
+    "pct": 91.88
+   }
+  },
+  "by_reason": {
+   "EXPIRED_AT_SUBMISSION": {
+    "count": 90,
+    "pct": 0.44
+   },
+   "ILLEGIBLE_SCAN": {
+    "count": 376,
+    "pct": 1.85
+   },
+   "LOW_CONFIDENCE": {
+    "count": 747,
+    "pct": 3.67
+   },
+   "NAME_MISMATCH": {
+    "count": 438,
+    "pct": 2.15
+   },
+   "OK": {
+    "count": 18693,
+    "pct": 91.88
+   }
+  },
+  "name_mismatch_rate_pct": 2.19,
+  "name_mismatch_rejections": 438,
+  "rejections_total": 904
+ }
+}

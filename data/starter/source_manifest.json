@@ -1,0 +1,24 @@
+{
+ "config_files_sha256": {
+  "config/generation.json": "fb907e91581cebfbafe282cb7d755ae476643b2643f3159c63e510213878d98a",
+  "config/policy.json": "1d67723c43a7ac1d07fdc89d7266a5f3b9774b098d6b3380c2452f98c3fa20c3"
+ },
+ "external_sources": [],
+ "generator": {
+  "as_of_date": "2026-11-13",
+  "command": "python run.py all --profile starter --seed 20261022 --as-of 2026-11-13",
+  "parameters": {
+   "anomalies_per_class": 3,
+   "businesses": 50,
+   "customers": 400,
+   "documents": 1000,
+   "reviews": 150
+  },
+  "profile": "starter",
+  "python_stdlib_only": true,
+  "seed": 20261022
+ },
+ "licence_notes": "Not applicable (no third-party data). Names are random combinations from small invented pools; any resemblance to real persons or companies is coincidental. Identity numbers are never stored - only SHA-256 fingerprints of synthetic strings.",
+ "provenance": "100% synthetic. No external or public datasets, no web access, no real personal or confidential data were used.",
+ "public_reference_use": "Schema inspiration only (generic KYC/CDD concepts: risk-based due diligence, beneficial ownership, periodic review). No data copied."
+}

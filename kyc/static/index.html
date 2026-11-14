@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KYC Evidence Platform</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#1c2430;--mut:#6b7684;--line:#dfe3e8;--pri:#1f4fd8;--ok:#14803c;--bad:#c62828;--warn:#b26a00}
+*{box-sizing:border-box}body{margin:0;font:14px/1.45 system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:#101a33;color:#fff;padding:10px 18px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+header h1{font-size:16px;margin:0 12px 0 0}header label{font-size:12px;opacity:.8}
+header select,header input,header button{font:inherit;padding:4px 8px;border-radius:5px;border:1px solid #3a4a73;background:#1b2a52;color:#fff}
+header button{cursor:pointer;background:var(--pri);border-color:var(--pri)}
+nav{display:flex;gap:2px;background:#e8ebf0;padding:0 14px;border-bottom:1px solid var(--line)}
+nav button{border:0;background:none;padding:10px 14px;cursor:pointer;font:inherit;color:var(--mut);border-bottom:3px solid transparent}
+nav button.on{color:var(--pri);border-color:var(--pri);font-weight:600}
+main{padding:16px 18px;max-width:1280px;margin:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}.kpi b{display:block;font-size:22px}.kpi span{color:var(--mut);font-size:12px}
+table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#f0f2f6;font-weight:600;position:sticky;top:0}tr.click:hover{background:#eef3ff;cursor:pointer}
+.tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;background:#e8ebf0}
+.APPROVED,.VALID,.VERIFIED,.RESOLVED,.COMPLETED,.ok{background:#d9f2e3;color:var(--ok)}
+.PENDING,.PENDING_VERIFICATION,.OPEN,.SCHEDULED,.INCONCLUSIVE,.IN_PROGRESS,.ACKNOWLEDGED,.MEDIUM{background:#fff0d6;color:var(--warn)}
+.ON_HOLD,.REJECTED,.EXPIRED,.HIGH,.CRITICAL,.ESCALATED,.bad{background:#fde0e0;color:var(--bad)}
+.SUPERSEDED,.LOW{background:#e8ebf0;color:var(--mut)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:10px}
+.row label{font-size:12px;color:var(--mut);display:flex;flex-direction:column;gap:2px}
+input,select{font:inherit;padding:5px 7px;border:1px solid var(--line);border-radius:5px;background:#fff}
+button.b{font:inherit;padding:5px 11px;border-radius:5px;border:1px solid var(--pri);background:var(--pri);color:#fff;cursor:pointer}
+button.b.sec{background:#fff;color:var(--pri)}button.b.sm{padding:2px 8px;font-size:12px}
+h2{font-size:15px;margin:0 0 8px}h3{font-size:13px;margin:12px 0 6px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+#toast{position:fixed;right:16px;bottom:16px;max-width:420px;padding:10px 14px;border-radius:8px;color:#fff;display:none;z-index:9}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:900px){.two{grid-template-columns:1fr}}
+.scroll{max-height:340px;overflow:auto}.mut{color:var(--mut)}code{background:#eef0f4;padding:0 4px;border-radius:3px}
+</style></head><body>
+<header><h1>KYC Evidence Platform</h1>
+<label>Acting as <select id="actor"></select></label>
+<label>Business date <b id="asof"></b></label>
+<input type="date" id="newdate"><button onclick="setDate()">Set date</button>
+<button onclick="daily()">Run daily batch</button>
+<span class="mut" id="role"></span></header>
+<nav id="nav"></nav><main id="main"></main><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const tag=v=>v==null?"":`<span class="tag ${esc(v)}">${esc(v)}</span>`;
+let staff=[],tab="dashboard",cur=null;
+async function api(path,method="GET",body){
+  const r=await fetch(path,{method,headers:{"Content-Type":"application/json","X-Actor":$("#actor").value},body:body?JSON.stringify(body):undefined});
+  const j=await r.json();if(!r.ok)throw new Error((j.error&&(j.error.code+": "+j.error.message))||r.status);return j}
+function toast(m,bad){const t=$("#toast");t.textContent=m;t.style.background=bad?"#c62828":"#14803c";t.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display="none",bad?7000:3500)}
+async function act(fn,msg){try{const r=await fn();if(msg)toast(msg);return r}catch(e){toast(e.message,true)}}
+const tabs={dashboard:"Dashboard",customers:"Customers",reviews:"Reviews",alerts:"Alerts",exceptions:"Exceptions",audit:"Audit trail"};
+function nav(){$("#nav").innerHTML=Object.entries(tabs).map(([k,v])=>`<button class="${k==tab?"on":""}" onclick="go('${k}')">${v}</button>`).join("")}
+function go(t){tab=t;nav();({dashboard,customers,reviews,alerts,exceptions,audit})[t]()}
+async function init(){staff=await api("/api/staff");
+  $("#actor").innerHTML=staff.filter(s=>s.user_id!="USR-SYS-000").map(s=>`<option value="${s.user_id}">${s.user_id} (${s.role.replace(/_/g," ").toLowerCase()})</option>`).join("");
+  $("#actor").value=(staff.find(s=>s.role=="SYSTEM_ADMINISTRATOR")||staff[1]).user_id;await sys();go("dashboard")}
+async function sys(){const s=await api("/api/system");$("#asof").textContent=s.as_of_date;$("#newdate").value=s.as_of_date}
+async function setDate(){await act(async()=>{await api("/api/system/as-of","POST",{as_of_date:$("#newdate").value});await sys();go(tab)},"Business date updated - now run the daily batch")}
+async function daily(){await act(async()=>{const r=await api("/api/admin/daily-run","POST");go(tab);toast(`Daily batch: ${r.decisions_recorded} decisions, ${r.document_statuses_updated} doc statuses, ${r.alerts_created} new alerts, ${r.alerts_closed} closed`)})}
+async function dashboard(){const s=await api("/api/summary");const k=(l,v)=>`<div class="kpi"><b>${v??0}</b><span>${l}</span></div>`;
+ const dist=(o)=>Object.entries(o||{}).map(([a,b])=>`${tag(a)} ${b}`).join(" &nbsp; ");
+ $("#main").innerHTML=`<div class="grid">${k("Customers",s.customers_total)}${k("Approved",s.customers.APPROVED)}${k("Pending",s.customers.PENDING)}${k("On hold",s.customers.ON_HOLD)}${k("Documents expiring in 30 days",s.documents_expiring_30d)}${k("Overdue reviews",s.reviews_overdue)}${k("Active alerts",s.alerts_open)}${k("Audit events",s.audit_events)}</div><br>
+ <div class="two"><div class="card"><h2>Customers by risk</h2>${dist(s.customers_by_risk)}<h3>Documents</h3>${dist(s.documents)}</div>
+ <div class="card"><h2>Reviews</h2>${dist(s.reviews)}<h3>Active alerts by type</h3>${dist(s.alerts_by_type)}</div></div>
+ <div class="card mut">Business date <b>${s.as_of_date}</b>. Workflow: onboard customer &rarr; customer submits documents &rarr; analyst verifies &rarr; completeness is re-evaluated (decision appended) &rarr; reviews, expiry alerts and audit trail follow. Open the <b>Exceptions</b> tab to run the full validator on live data.</div>`}
+async function customers(){$("#main").innerHTML=`<div class="card"><div class="row">
+ <label>Search<input id="q" placeholder="CUS-000007 or name"></label>
+ <label>Status<select id="fs"><option></option><option>APPROVED</option><option>PENDING</option><option>ON_HOLD</option></select></label>
+ <label>Type<select id="ft"><option></option><option>INDIVIDUAL</option><option>BUSINESS</option></select></label>
+ <label>Risk<select id="fr"><option></option><option>LOW</option><option>MEDIUM</option><option>HIGH</option></select></label>
+ <button class="b" onclick="listC()">Search</button> <button class="b sec" onclick="newC()">+ New customer</button></div>
+ <div class="scroll" id="clist"></div></div><div id="detail"></div>`;listC();if(cur)detail(cur)}
+async function listC(){const p=new URLSearchParams({search:$("#q").value,status:$("#fs").value,customer_type:$("#ft").value,risk_level:$("#fr").value,limit:50});
+ const r=await api("/api/customers?"+p);$("#clist").innerHTML=`<div class="mut">${r.total} customers (showing ${r.items.length})</div><table><tr><th>ID</th><th>Name</th><th>Type</th><th>Risk</th><th>Status</th><th>Since</th></tr>${r.items.map(c=>`<tr class="click" onclick="detail('${c.customer_id}')"><td>${c.customer_id}</td><td>${esc(c.legal_name)}</td><td>${c.customer_type_id}</td><td>${tag(c.risk_level)}</td><td>${tag(c.status)}</td><td>${c.status_since}</td></tr>`).join("")}</table>`}
+function newC(){$("#detail").innerHTML=`<div class="card"><h2>New customer</h2><div class="row"><label>Legal name<input id="n_name"></label><label>Type<select id="n_type"><option>INDIVIDUAL</option><option>BUSINESS</option></select></label><label>Risk<select id="n_risk"><option>LOW</option><option>MEDIUM</option><option>HIGH</option></select></label><label>Country<input id="n_cc" value="IN" size="3"></label><button class="b" onclick="createC()">Create</button></div><div class="mut">Requires an operations analyst (or admin).</div></div>`}
+async function createC(){const r=await act(()=>api("/api/customers","POST",{legal_name:$("#n_name").value,customer_type_id:$("#n_type").value,risk_level:$("#n_risk").value,country_code:$("#n_cc").value}),"Customer created");if(r){cur=r.customer.customer_id;listC();detail(cur)}}
+async function detail(id){cur=id;const d=await act(()=>api("/api/customers/"+id));if(!d)return;const c=d.customer,e=d.evaluation,biz=c.customer_type_id=="BUSINESS";
+ const DT=["ID_PROOF","ADDRESS_PROOF","TAX_PROOF","SOURCE_OF_FUNDS","BUSINESS_REGISTRATION","OWNERSHIP_DECLARATION"];
+ $("#detail").innerHTML=`<div class="card"><h2>${c.customer_id} &mdash; ${esc(c.legal_name)} ${tag(c.status)} ${tag(c.risk_level)}</h2>
+ <div class="mut">${c.customer_type_id} &middot; ${c.country_code} &middot; onboarded ${c.onboarding_date} &middot; completeness <b>${e.completeness_pct}%</b> (${e.satisfied_count}/${e.required_count})</div>
+ <div class="row" style="margin-top:8px"><button class="b" onclick="evalC('${id}')">Re-evaluate completeness</button><button class="b sec" onclick="mkRev('${id}')">Schedule periodic review</button></div>
+ <div class="two"><div><h3>Mandatory evidence checklist</h3><table>${d.checklist.map(x=>`<tr><td>${x.document_type}</td><td>${x.satisfied?'<span class="tag ok">OK</span>':'<span class="tag bad">'+esc(x.reason||"MISSING")+'</span>'}</td></tr>`).join("")}</table>
+ <h3>Submit document (customer portal)</h3><div class="row"><label>Type<select id="d_type">${DT.map(t=>`<option>${t}</option>`).join("")}</select></label><label>Document no.<input id="d_no" size="12"></label><label>Name on document<input id="d_name" value="${esc(c.legal_name)}"></label><label>Issue date<input type="date" id="d_issue"></label><label>Scan quality<input id="d_q" type="number" value="80" style="width:64px"></label><button class="b sm" onclick="subDoc('${id}')">Submit</button></div></div>
+ <div><h3>Decisions (append-only)</h3><table><tr><th>Date</th><th>Decision</th><th>%</th><th>Reasons</th></tr>${d.decisions.map(x=>`<tr><td>${x.decision_date}</td><td>${tag(x.decision)}</td><td>${x.completeness_pct}</td><td class="mut">${esc(x.reason_codes)}</td></tr>`).join("")}</table>
+ ${biz?`<h3>Beneficial ownership</h3><table>${d.ownership.map(o=>`<tr><td>${esc(o.full_name)}</td><td>${o.ownership_pct}%</td><td>${o.effective_from}</td></tr>`).join("")}</table><div class="row"><label>Owner name<input id="o_name"></label><label>%<input id="o_pct" type="number" step="0.01" style="width:70px"></label><button class="b sm" onclick="addOwn('${id}')">Add owner</button></div>`:""}
+ </div></div>
+ <h3>Documents &amp; verification</h3><table><tr><th>ID</th><th>Type</th><th>Issued</th><th>Expires</th><th>Status</th><th>Replaces</th><th>Verification</th><th></th></tr>${d.documents.map(x=>{const v=d.verifications.filter(y=>y.document_id==x.document_id);return `<tr><td>${x.document_id}</td><td>${x.document_type_code}</td><td>${x.issue_date}</td><td>${x.expiry_date||"-"}</td><td>${tag(x.status)}</td><td>${x.supersedes_document_id||""}</td><td>${v.map(y=>tag(y.outcome)+" <span class='mut'>"+y.reason_code+"</span>").join("<br>")}</td><td>${x.status=="PENDING_VERIFICATION"?`<button class="b sm" onclick="ver('${x.document_id}')">Verify</button>`:""}</td></tr>`}).join("")}</table>
+ <div class="two"><div><h3>Reviews</h3><table>${d.reviews.map(r=>`<tr><td>${r.review_id}</td><td>${tag(r.status)}</td><td>due ${r.due_date}</td></tr>`).join("")||"<tr><td class=mut>none</td></tr>"}</table><h3>Alerts</h3><table>${d.alerts.map(a=>`<tr><td>${a.alert_id}</td><td>${a.alert_type}${a.lead_days?" ("+a.lead_days+"d)":""}</td><td>${a.trigger_date}</td><td>${tag(a.status)}</td></tr>`).join("")||"<tr><td class=mut>none</td></tr>"}</table></div>
+ <div><h3>Audit trail</h3><div class="scroll"><table>${d.audit.map(a=>`<tr><td>${a.event_ts.replace("T"," ").replace("Z","")}</td><td>${a.action}</td><td class="mut">${esc(a.details)}</td></tr>`).join("")}</table></div></div></div></div>`;
+ $("#detail").scrollIntoView({behavior:"smooth"})}
+async function subDoc(id){await act(async()=>{await api(`/api/customers/${id}/documents`,"POST",{document_type_code:$("#d_type").value,document_number:$("#d_no").value,name_on_document:$("#d_name").value,issue_date:$("#d_issue").value,scan_quality_score:+$("#d_q").value});detail(id)},"Document submitted - verify it next")}
+async function ver(doc){await act(async()=>{const r=await api(`/api/documents/${doc}/verify`,"POST");detail(cur);toast(`${r.verification.outcome} (${r.verification.reason_code})`+(r.decision?` - decision ${r.decision.decision}`:""))})}
+async function evalC(id){await act(async()=>{const r=await api(`/api/customers/${id}/evaluate`,"POST");detail(id);toast(r.decision_recorded?"New decision: "+r.decision_recorded.decision:"No change in decision")})}
+async function addOwn(id){await act(async()=>{await api(`/api/customers/${id}/owners`,"POST",{full_name:$("#o_name").value,ownership_pct:$("#o_pct").value});detail(id)},"Owner added")}
+async function mkRev(id){await act(async()=>{await api(`/api/customers/${id}/reviews`,"POST");detail(id)},"Review scheduled")}
+async function reviews(){const od=$("#od")?$("#od").checked:false,st=$("#rs")?$("#rs").value:"";
+ const r=await api(`/api/reviews?limit=100&overdue=${od}&status=${st}`);
+ $("#main").innerHTML=`<div class="card"><div class="row"><label>Status<select id="rs" onchange="reviews()"><option></option>${["SCHEDULED","OPEN","IN_PROGRESS","ESCALATED","COMPLETED"].map(s=>`<option ${s==st?"selected":""}>${s}</option>`).join("")}</select></label><label><span>Overdue only</span><input type="checkbox" id="od" ${od?"checked":""} onchange="reviews()"></label></div>
+ <div class="scroll" style="max-height:560px"><table><tr><th>Review</th><th>Status</th><th>Due</th><th>Risk</th><th>Resolution</th><th>Move to</th></tr>${r.map(x=>`<tr><td>${x.review_id}</td><td>${tag(x.status)}</td><td>${x.due_date}</td><td>${tag(x.risk_level_at_open)}</td><td>${x.resolution||""}</td><td>${nextR(x)}</td></tr>`).join("")}</table></div></div>`}
+const NEXT={SCHEDULED:["OPEN"],OPEN:["IN_PROGRESS"],IN_PROGRESS:["ESCALATED","COMPLETED"],ESCALATED:["COMPLETED"],COMPLETED:[]};
+const nextR=x=>NEXT[x.status].map(s=>`<button class="b sm sec" onclick="trans('${x.review_id}','${s}')">${s}</button>`).join(" ")
+async function trans(id,to){let res=null;if(to=="COMPLETED"){res=prompt("Resolution (NO_CHANGE, EVIDENCE_REFRESH_REQUESTED, ESCALATED_TO_COMPLIANCE, EXIT_RECOMMENDED) - leave empty to see the guard:","NO_CHANGE")||undefined}
+ await act(async()=>{await api(`/api/reviews/${id}/transition`,"POST",{to_status:to,resolution:res});reviews()},"Review moved to "+to)}
+async function alerts(){const st=$("#as")?$("#as").value:"ACTIVE",ty=$("#at")?$("#at").value:"";const r=await api(`/api/alerts?status=${st}&alert_type=${ty}&limit=150`);
+ $("#main").innerHTML=`<div class="card"><div class="row"><label>Status<select id="as" onchange="alerts()">${["ACTIVE","","OPEN","ACKNOWLEDGED","RESOLVED","SUPERSEDED"].map(s=>`<option value="${s}" ${s==st?"selected":""}>${s||"ALL"}</option>`).join("")}</select></label><label>Type<select id="at" onchange="alerts()"><option value=""></option>${["DOCUMENT_EXPIRING","DOCUMENT_EXPIRED","REVIEW_OVERDUE"].map(s=>`<option ${s==ty?"selected":""}>${s}</option>`).join("")}</select></label><button class="b" onclick="scan()">Run expiry/overdue scan</button></div>
+ <div class="scroll" style="max-height:560px"><table><tr><th>Alert</th><th>Type</th><th>Lead</th><th>Customer</th><th>Trigger</th><th>Severity</th><th>Status</th><th></th></tr>${r.map(a=>`<tr><td>${a.alert_id}</td><td>${a.alert_type}</td><td>${a.lead_days||""}</td><td>${a.customer_id}</td><td>${a.trigger_date}</td><td>${tag(a.severity)}</td><td>${tag(a.status)}</td><td>${a.status=="OPEN"?`<button class="b sm sec" onclick="ack('${a.alert_id}')">Acknowledge</button>`:""}</td></tr>`).join("")}</table></div></div>`}
+async function scan(){await act(async()=>{const r=await api("/api/admin/alerts/scan","POST");alerts();toast(`Scan: ${r.alerts_created} created, ${r.alerts_closed} closed (idempotent - run it twice to see 0)`)})}
+async function ack(id){await act(async()=>{await api(`/api/alerts/${id}/acknowledge`,"POST");alerts()},"Acknowledged")}
+async function exceptions(){$("#main").innerHTML=`<div class="card">Running full validator on live data...</div>`;const r=await act(()=>api("/api/exceptions"));if(!r)return;
+ $("#main").innerHTML=`<div class="card"><h2>Exceptions &amp; data-quality findings @ ${r.as_of_date}</h2><div>${Object.entries(r.by_category).map(([k,v])=>`${tag(k=="BUSINESS_RULE"?"MEDIUM":"HIGH")} ${k}: <b>${v}</b>`).join(" &nbsp; ")||'<span class="tag ok">No findings</span>'}</div><div class="mut">BUSINESS_RULE = policy exceptions (expired-but-valid, approved with missing evidence, ownership &gt; 100%, review closed without resolution, duplicate document). INTEGRITY / RECONCILIATION should be 0.</div>
+ <div class="scroll" style="max-height:560px"><table><tr><th>Rule</th><th>Category</th><th>Severity</th><th>Entity</th><th>Customer</th><th>Detail</th></tr>${r.findings.map(f=>`<tr class="click" onclick="${/^CUS-\d{6}$/.test(f.customer_id||"")?`go('customers');setTimeout(()=>detail('${f.customer_id}'),150)`:""}"><td>${f.rule_code}</td><td>${f.category}</td><td>${tag(f.severity)}</td><td>${f.entity_id}</td><td>${f.customer_id||""}</td><td class="mut">${esc(f.detail)}</td></tr>`).join("")}</table></div></div>`}
+async function audit(){const r=await api("/api/audit-events?limit=200"+($("#ac")&&$("#ac").value?"&customer_id="+$("#ac").value:""));
+ $("#main").innerHTML=`<div class="card"><div class="row"><label>Customer id<input id="ac" placeholder="CUS-000007"></label><button class="b" onclick="audit()">Filter</button></div><div class="scroll" style="max-height:560px"><table><tr><th>ID</th><th>Time</th><th>Customer</th><th>Action</th><th>Entity</th><th>Actor</th><th>Details</th></tr>${r.map(a=>`<tr><td>${a.audit_event_id}</td><td>${a.event_ts}</td><td>${a.customer_id}</td><td>${a.action}</td><td>${a.entity_id}</td><td>${a.actor_id}</td><td class="mut">${esc(a.details)}</td></tr>`).join("")}</table></div></div>`}
+init();
+</script></body></html>

@@ -1,0 +1,167 @@
+[
+ {
+  "anomaly_id": "GT-000001",
+  "customer_id": "CUS-000079",
+  "description": "expiry_date 2026-08-31 < as_of 2026-11-13 but status stored as VALID",
+  "entity_id": "DOC-CUS-000079-002",
+  "entity_type": "document",
+  "expected_rule_code": "EXPIRED_DOCUMENT_MARKED_VALID",
+  "issue_type": "EXPIRED_DOCUMENT_MARKED_VALID",
+  "related_entity_id": null,
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000002",
+  "customer_id": "CUS-000296",
+  "description": "expiry_date 2026-10-25 < as_of 2026-11-13 but status stored as VALID",
+  "entity_id": "DOC-CUS-000296-001",
+  "entity_type": "document",
+  "expected_rule_code": "EXPIRED_DOCUMENT_MARKED_VALID",
+  "issue_type": "EXPIRED_DOCUMENT_MARKED_VALID",
+  "related_entity_id": null,
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000003",
+  "customer_id": "CUS-000163",
+  "description": "expiry_date 2026-09-03 < as_of 2026-11-13 but status stored as VALID",
+  "entity_id": "DOC-CUS-000163-002",
+  "entity_type": "document",
+  "expected_rule_code": "EXPIRED_DOCUMENT_MARKED_VALID",
+  "issue_type": "EXPIRED_DOCUMENT_MARKED_VALID",
+  "related_entity_id": null,
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000004",
+  "customer_id": "CUS-000291",
+  "description": "APPROVED with completeness 50.00% (REJECTED_DOC:ADDRESS_PROOF)",
+  "entity_id": "CUS-000291",
+  "entity_type": "customer",
+  "expected_rule_code": "APPROVED_WITH_MISSING_EVIDENCE",
+  "issue_type": "APPROVED_WITH_MISSING_EVIDENCE",
+  "related_entity_id": "DEC-000811",
+  "severity": "CRITICAL"
+ },
+ {
+  "anomaly_id": "GT-000005",
+  "customer_id": "CUS-000133",
+  "description": "APPROVED with completeness 50.00% (MISSING_DOC:ADDRESS_PROOF)",
+  "entity_id": "CUS-000133",
+  "entity_type": "customer",
+  "expected_rule_code": "APPROVED_WITH_MISSING_EVIDENCE",
+  "issue_type": "APPROVED_WITH_MISSING_EVIDENCE",
+  "related_entity_id": "DEC-000812",
+  "severity": "CRITICAL"
+ },
+ {
+  "anomaly_id": "GT-000006",
+  "customer_id": "CUS-000325",
+  "description": "APPROVED with completeness 50.00% (MISSING_DOC:ID_PROOF)",
+  "entity_id": "CUS-000325",
+  "entity_type": "customer",
+  "expected_rule_code": "APPROVED_WITH_MISSING_EVIDENCE",
+  "issue_type": "APPROVED_WITH_MISSING_EVIDENCE",
+  "related_entity_id": "DEC-000813",
+  "severity": "CRITICAL"
+ },
+ {
+  "anomaly_id": "GT-000007",
+  "customer_id": "CUS-000276",
+  "description": "effective ownership total = 121.00% (> 100)",
+  "entity_id": "CUS-000276",
+  "entity_type": "customer",
+  "expected_rule_code": "OWNERSHIP_OVER_100",
+  "issue_type": "OWNERSHIP_OVER_100",
+  "related_entity_id": "OWN-000096",
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000008",
+  "customer_id": "CUS-000007",
+  "description": "effective ownership total = 112.00% (> 100)",
+  "entity_id": "CUS-000007",
+  "entity_type": "customer",
+  "expected_rule_code": "OWNERSHIP_OVER_100",
+  "issue_type": "OWNERSHIP_OVER_100",
+  "related_entity_id": "OWN-000097",
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000009",
+  "customer_id": "CUS-000271",
+  "description": "effective ownership total = 124.00% (> 100)",
+  "entity_id": "CUS-000271",
+  "entity_type": "customer",
+  "expected_rule_code": "OWNERSHIP_OVER_100",
+  "issue_type": "OWNERSHIP_OVER_100",
+  "related_entity_id": "OWN-000098",
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000010",
+  "customer_id": "CUS-000166",
+  "description": "status COMPLETED but resolution is NULL",
+  "entity_id": "REV-CUS-000166-2026",
+  "entity_type": "review_case",
+  "expected_rule_code": "REVIEW_CLOSED_WITHOUT_RESOLUTION",
+  "issue_type": "REVIEW_CLOSED_WITHOUT_RESOLUTION",
+  "related_entity_id": null,
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000011",
+  "customer_id": "CUS-000089",
+  "description": "status COMPLETED but resolution is NULL",
+  "entity_id": "REV-CUS-000089-2026",
+  "entity_type": "review_case",
+  "expected_rule_code": "REVIEW_CLOSED_WITHOUT_RESOLUTION",
+  "issue_type": "REVIEW_CLOSED_WITHOUT_RESOLUTION",
+  "related_entity_id": null,
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000012",
+  "customer_id": "CUS-000365",
+  "description": "status COMPLETED but resolution is NULL",
+  "entity_id": "REV-CUS-000365-2026",
+  "entity_type": "review_case",
+  "expected_rule_code": "REVIEW_CLOSED_WITHOUT_RESOLUTION",
+  "issue_type": "REVIEW_CLOSED_WITHOUT_RESOLUTION",
+  "related_entity_id": null,
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000013",
+  "customer_id": "CUS-000154",
+  "description": "fingerprint shared with DOC-CUS-000230-002 (customer CUS-000230)",
+  "entity_id": "DOC-CUS-000154-002",
+  "entity_type": "document",
+  "expected_rule_code": "DUPLICATE_DOCUMENT_ACROSS_CUSTOMERS",
+  "issue_type": "DUPLICATE_DOCUMENT_ACROSS_CUSTOMERS",
+  "related_entity_id": "DOC-CUS-000230-002",
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000014",
+  "customer_id": "CUS-000054",
+  "description": "fingerprint shared with DOC-CUS-000075-001 (customer CUS-000075)",
+  "entity_id": "DOC-CUS-000054-002",
+  "entity_type": "document",
+  "expected_rule_code": "DUPLICATE_DOCUMENT_ACROSS_CUSTOMERS",
+  "issue_type": "DUPLICATE_DOCUMENT_ACROSS_CUSTOMERS",
+  "related_entity_id": "DOC-CUS-000075-001",
+  "severity": "HIGH"
+ },
+ {
+  "anomaly_id": "GT-000015",
+  "customer_id": "CUS-000399",
+  "description": "fingerprint shared with DOC-CUS-000176-001 (customer CUS-000176)",
+  "entity_id": "DOC-CUS-000399-001",
+  "entity_type": "document",
+  "expected_rule_code": "DUPLICATE_DOCUMENT_ACROSS_CUSTOMERS",
+  "issue_type": "DUPLICATE_DOCUMENT_ACROSS_CUSTOMERS",
+  "related_entity_id": "DOC-CUS-000176-001",
+  "severity": "HIGH"
+ }
+]

@@ -1,0 +1,7 @@
+document_type_code,description,validity_days
+ADDRESS_PROOF,Residential or registered address proof,365
+BUSINESS_REGISTRATION,Certificate of incorporation / business registration,1825
+ID_PROOF,Government identity proof (account holder or authorised signatory),3650
+OWNERSHIP_DECLARATION,Signed beneficial-ownership declaration,365
+SOURCE_OF_FUNDS,Source-of-funds declaration (enhanced due diligence),365
+TAX_PROOF,Tax identification proof (non-expiring),

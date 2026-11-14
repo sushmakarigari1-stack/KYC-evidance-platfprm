@@ -1,0 +1,33 @@
+{
+ "as_of_date": "2026-11-13",
+ "files_compared": 44,
+ "files_with_different_checksum": [],
+ "profile": "starter",
+ "reproducible": true,
+ "row_counts": {
+  "alert": 220,
+  "alert_event": 414,
+  "audit_event": 4753,
+  "beneficial_owner": 89,
+  "customer": 400,
+  "customer_decision": 813,
+  "customer_type": 2,
+  "document": 1000,
+  "document_type": 6,
+  "kyc_requirement": 21,
+  "ownership_link": 98,
+  "review_case": 150,
+  "review_case_event": 599,
+  "risk_rating": 415,
+  "staff_user": 18,
+  "verification": 1014
+ },
+ "row_counts_identical": true,
+ "runs": 2,
+ "sample_checksums": {
+  "operational/csv/audit_event.csv": "a7dd4747d30d23dba01a970332e583591c3cc23dfe9888e463819c895785a519",
+  "operational/csv/customer.csv": "e4058d0d5d3d85f3c39119931eecb8341fa4f5f018c8f43bfd07d4eaf9e8172f",
+  "operational/csv/document.csv": "f9e231a9e05f646d5c9f65e4df5820461cafe33f1332fb69b66fea806340cb2f"
+ },
+ "seed": 20261022
+}

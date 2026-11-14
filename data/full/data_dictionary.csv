@@ -1,0 +1,115 @@
+table,field,type,required,allowed_values,unit,unique,validation_rule,foreign_key,description
+customer_type,customer_type_id,TEXT,yes,INDIVIDUAL|BUSINESS,,yes,Must be one of the configured customer types.,,Stable code of the customer class.
+customer_type,description,TEXT,yes,,,no,Non-empty.,,Human description.
+customer_type,requires_beneficial_owner,INTEGER,yes,0|1,,no,0/1.,,1 when ownership must be disclosed and reconcile to 100%.
+staff_user,user_id,TEXT,yes,,,yes,USR-<ROLE>-nnn.,,Staff or system identifier.
+staff_user,role,TEXT,yes,SYSTEM|OPERATIONS_ANALYST|RISK_COMPLIANCE_REVIEWER|SYSTEM_ADMINISTRATOR,,no,Enum.,,Role of the actor.
+staff_user,display_name,TEXT,yes,,,no,Non-empty; synthetic only.,,Synthetic display name.
+document_type,document_type_code,TEXT,yes,ID_PROOF|ADDRESS_PROOF|TAX_PROOF|SOURCE_OF_FUNDS|BUSINESS_REGISTRATION|OWNERSHIP_DECLARATION,,yes,Enum from policy.,,Stable code.
+document_type,description,TEXT,yes,,,no,Non-empty.,,Human description.
+document_type,validity_days,INTEGER,no,,days,no,NULL or > 0.,,Days a document stays valid after issue_date; NULL = non-expiring.
+kyc_requirement,kyc_requirement_id,TEXT,yes,,,yes,^KYC-\d{4}-\d{6}$,,KYC-<year>-nnnnnn.
+kyc_requirement,customer_type_id,TEXT,yes,INDIVIDUAL|BUSINESS,,no,,customer_type(customer_type_id),Customer class the rule applies to.
+kyc_requirement,risk_level,TEXT,yes,LOW|MEDIUM|HIGH,,no,,,Risk level the rule applies to.
+kyc_requirement,document_type_code,TEXT,yes,ID_PROOF|ADDRESS_PROOF|TAX_PROOF|SOURCE_OF_FUNDS|BUSINESS_REGISTRATION|OWNERSHIP_DECLARATION,,no,,document_type(document_type_code),Mandatory document type.
+kyc_requirement,mandatory,INTEGER,yes,0|1,,no,Always 1 in this policy.,,1 = mandatory evidence.
+kyc_requirement,policy_version,TEXT,yes,,,no,Non-empty.,,Policy version that defined the rule.
+kyc_requirement,effective_from,TEXT,yes,,date,no,,,First day the rule applies.
+kyc_requirement,effective_to,TEXT,no,,date,no,NULL or >= effective_from.,,Last day the rule applies; NULL = open-ended.
+customer,customer_id,TEXT,yes,,,yes,^CUS-\d{6}$,,"CUS-nnnnnn, immutable."
+customer,customer_type_id,TEXT,yes,INDIVIDUAL|BUSINESS,,no,,customer_type(customer_type_id),Customer class.
+customer,legal_name,TEXT,yes,,,no,Non-empty.,,Synthetic legal name used for name-match checks.
+customer,country_code,TEXT,yes,IN|US|GB|SG|DE|AE|BR|NG,,no,ISO-3166 alpha-2 subset.,,Country of residence / incorporation.
+customer,birth_or_incorporation_date,TEXT,yes,,date,no,< onboarding_date.,,Date of birth (individual) or incorporation date (business).
+customer,onboarding_date,TEXT,yes,,date,no,<= as_of_date.,,Date the account relationship started.
+customer,risk_level,TEXT,yes,LOW|MEDIUM|HIGH,,no,Equals latest risk_rating.risk_level.,,Current rating = latest risk_rating row.
+customer,status,TEXT,yes,PENDING|APPROVED|ON_HOLD,,no,Equals latest customer_decision.decision.,,Current KYC status = latest customer_decision.
+customer,status_since,TEXT,yes,,date,no,Equals latest customer_decision.decision_date.,,Date of the latest decision.
+risk_rating,risk_rating_id,TEXT,yes,,,yes,^RSK-\d{6}$,,RSK-nnnnnn.
+risk_rating,customer_id,TEXT,yes,,,no,,customer(customer_id),Rated customer.
+risk_rating,risk_score,INTEGER,yes,,points,no,0..200 and equals sum of score_components.,,Sum of the factor points in score_components.
+risk_rating,risk_level,TEXT,yes,LOW|MEDIUM|HIGH,,no,"Derived: <40 LOW, 40-64 MEDIUM, >=65 HIGH.",,Level derived from score thresholds.
+risk_rating,score_components,TEXT,yes,,,no,Parsable key=int list.,,"Factor=points pairs, ';' separated."
+risk_rating,rating_reason,TEXT,yes,INITIAL|RE_RATING,,no,,,INITIAL at onboarding or RE_RATING.
+risk_rating,effective_from,TEXT,yes,,date,no,,,Start of validity.
+risk_rating,effective_to,TEXT,no,,date,no,NULL or > effective_from; exactly one NULL per customer.,,End of validity; NULL = current.
+document,document_id,TEXT,yes,,,yes,^DOC-CUS-\d{6}-\d{3}$,,DOC-<customer_id>-nnn.
+document,customer_id,TEXT,yes,,,no,Prefix of document_id equals customer_id.,customer(customer_id),Owner of the evidence.
+document,document_type_code,TEXT,yes,ID_PROOF|ADDRESS_PROOF|TAX_PROOF|SOURCE_OF_FUNDS|BUSINESS_REGISTRATION|OWNERSHIP_DECLARATION,,no,,document_type(document_type_code),Type of evidence.
+document,name_on_document,TEXT,yes,,,no,Non-empty.,,Name printed on the document (used for name matching).
+document,document_fingerprint,TEXT,yes,,,no,64 hex chars; unique across customers.,,SHA-256 of the synthetic document number (no raw numbers stored).
+document,issue_date,TEXT,yes,,date,no,,,Date the issuer issued the document.
+document,expiry_date,TEXT,no,,date,no,NULL iff validity_days is NULL; else issue_date + validity_days.,,Expiry date; NULL for non-expiring types.
+document,submitted_on,TEXT,yes,,date,no,>= issue_date and >= customer.onboarding_date.,,Date the customer submitted the document.
+document,scan_quality_score,INTEGER,yes,0..100,score 0-100,no,,,Image/scan quality used by verification rules.
+document,status,TEXT,yes,PENDING_VERIFICATION|VALID|REJECTED|EXPIRED|SUPERSEDED,,no,Equals derived status.,,Document lifecycle status as of as_of_date (derived from verification + expiry + supersession).
+document,supersedes_document_id,TEXT,no,,,no,Same customer and type; older submitted_on.,document(document_id),Older document this one replaces (renewal / resubmission).
+verification,verification_id,TEXT,yes,,,yes,^VER-\d{6}$,,VER-nnnnnn.
+verification,document_id,TEXT,yes,,,no,,document(document_id),Verified document.
+verification,attempt_no,INTEGER,yes,,count,no,Contiguous from 1 per document.,,1-based attempt counter per document.
+verification,verified_on,TEXT,yes,,date,no,>= document.submitted_on.,,Date of the attempt.
+verification,outcome,TEXT,yes,VERIFIED|REJECTED|INCONCLUSIVE,,no,,,Result of the attempt.
+verification,reason_code,TEXT,yes,OK|NAME_MISMATCH|ILLEGIBLE_SCAN|EXPIRED_AT_SUBMISSION|LOW_CONFIDENCE,,no,OK iff VERIFIED.,,Reason behind the outcome.
+verification,verified_by,TEXT,yes,,,no,,staff_user(user_id),Staff/system actor.
+beneficial_owner,owner_id,TEXT,yes,,,yes,^BO-\d{6}$,,BO-nnnnnn.
+beneficial_owner,full_name,TEXT,yes,,,no,Non-empty.,,Synthetic person name.
+beneficial_owner,date_of_birth,TEXT,yes,,date,no,,,Synthetic date of birth.
+beneficial_owner,nationality,TEXT,yes,IN|US|GB|SG|DE|AE|BR|NG,,no,,,Nationality.
+ownership_link,ownership_link_id,TEXT,yes,,,yes,^OWN-\d{6}$,,OWN-nnnnnn.
+ownership_link,customer_id,TEXT,yes,,,no,customer_type = BUSINESS.,customer(customer_id),Business customer.
+ownership_link,owner_id,TEXT,yes,,,no,,beneficial_owner(owner_id),Beneficial owner.
+ownership_link,ownership_pct,REAL,yes,,percent (2 dp),no,> 0 and <= 100; effective links per customer must sum to 100.00.,,Share held.
+ownership_link,effective_from,TEXT,yes,,date,no,,,Start of validity.
+ownership_link,effective_to,TEXT,no,,date,no,NULL or > effective_from.,,End of validity; NULL = current.
+customer_decision,decision_id,TEXT,yes,,,yes,^DEC-\d{6}$,,DEC-nnnnnn.
+customer_decision,customer_id,TEXT,yes,,,no,,customer(customer_id),Decided customer.
+customer_decision,decision_date,TEXT,yes,,date,no,>= customer.onboarding_date.,,Effective date of the decision.
+customer_decision,decision,TEXT,yes,PENDING|APPROVED|ON_HOLD,,no,,,PENDING / APPROVED / ON_HOLD.
+customer_decision,required_count,INTEGER,yes,,count,no,,,Requirements checked (documents + ownership for business).
+customer_decision,satisfied_count,INTEGER,yes,,count,no,<= required_count.,,Requirements satisfied on decision_date.
+customer_decision,completeness_pct,REAL,yes,,percent (2 dp),no,Recomputed from source records by the validator.,,100 * satisfied_count / required_count.
+customer_decision,reason_codes,TEXT,no,,,no,MISSING_DOC:<type>|EXPIRED_DOC:<type>|REJECTED_DOC:<type>|PENDING_VERIFICATION:<type>|OWNERSHIP_MISSING|OWNERSHIP_TOTAL_NOT_100.,,Pipe-separated unmet-requirement codes; empty when complete.
+customer_decision,policy_version,TEXT,yes,,,no,Non-empty.,,Policy version applied.
+customer_decision,decided_by,TEXT,yes,,,no,,staff_user(user_id),Staff/system actor.
+review_case,review_id,TEXT,yes,,,yes,^REV-CUS-\d{6}-\d{4}$,,REV-<customer_id>-<year>.
+review_case,customer_id,TEXT,yes,,,no,,customer(customer_id),Reviewed customer.
+review_case,review_type,TEXT,yes,PERIODIC,,no,,,Review trigger.
+review_case,risk_level_at_open,TEXT,yes,LOW|MEDIUM|HIGH,,no,,,Risk level used to schedule the review.
+review_case,due_date,TEXT,yes,,date,no,,,Contractual due date = onboarding_date + k * risk period.
+review_case,opened_on,TEXT,no,,date,no,<= as_of_date.,,Date opened; NULL while SCHEDULED.
+review_case,status,TEXT,yes,SCHEDULED|OPEN|IN_PROGRESS|ESCALATED|COMPLETED,,no,,,Current state = last review_case_event.to_status.
+review_case,assigned_to,TEXT,no,,,no,,staff_user(user_id),Assigned reviewer.
+review_case,completed_on,TEXT,no,,date,no,Set iff status = COMPLETED; >= opened_on.,,Completion date.
+review_case,resolution,TEXT,no,NO_CHANGE|EVIDENCE_REFRESH_REQUESTED|ESCALATED_TO_COMPLIANCE|EXIT_RECOMMENDED,,no,NOT NULL when status = COMPLETED.,,Outcome; mandatory when COMPLETED.
+review_case_event,review_event_id,TEXT,yes,,,yes,^RVE-\d{6}$,,RVE-nnnnnn.
+review_case_event,review_id,TEXT,yes,,,no,,review_case(review_id),Review.
+review_case_event,from_status,TEXT,no,SCHEDULED|OPEN|IN_PROGRESS|ESCALATED|COMPLETED,,no,,,Previous state; NULL for the creation event.
+review_case_event,to_status,TEXT,yes,SCHEDULED|OPEN|IN_PROGRESS|ESCALATED|COMPLETED,,no,Must be an allowed transition from from_status.,,New state.
+review_case_event,event_date,TEXT,yes,,date,no,,,Date of the transition.
+review_case_event,actor_id,TEXT,yes,,,no,,staff_user(user_id),Staff/system actor.
+review_case_event,note,TEXT,no,,,no,,,Free-text note.
+alert,alert_id,TEXT,yes,,,yes,^ALT-\d{4}-\d{6}$,,ALT-<year>-nnnnnn.
+alert,alert_type,TEXT,yes,DOCUMENT_EXPIRING|DOCUMENT_EXPIRED|REVIEW_OVERDUE,,no,,,Alert class.
+alert,customer_id,TEXT,yes,,,no,,customer(customer_id),Affected customer.
+alert,document_id,TEXT,no,,,no,Set iff alert_type is DOCUMENT_*.,document(document_id),Document (expiry alerts).
+alert,review_id,TEXT,no,,,no,Set iff alert_type = REVIEW_OVERDUE.,review_case(review_id),Review (overdue alerts).
+alert,lead_days,INTEGER,no,90|60|30|7,days,no,,,Configured lead time that fired (DOCUMENT_EXPIRING only).
+alert,severity,TEXT,yes,LOW|MEDIUM|HIGH,,no,,,Severity mapped from lead time / type.
+alert,trigger_date,TEXT,yes,,date,no,Recomputed from document expiry / review due date and configured lead times.,,Date the alert was raised.
+alert,status,TEXT,yes,OPEN|ACKNOWLEDGED|RESOLVED|SUPERSEDED,,no,,,Current state = last alert_event.
+alert,dedupe_key,TEXT,yes,,,yes,Unique.,,Unique business key: type|entity|cycle[|lead].
+alert,resolved_on,TEXT,no,,date,no,,,Date resolved/superseded.
+alert_event,alert_event_id,TEXT,yes,,,yes,^ALE-\d{6}$,,ALE-nnnnnn.
+alert_event,alert_id,TEXT,yes,,,no,,alert(alert_id),Alert.
+alert_event,event_type,TEXT,yes,CREATED|ACKNOWLEDGED|RESOLVED|SUPERSEDED,,no,Must follow alert_transitions.,,CREATED / ACKNOWLEDGED / RESOLVED / SUPERSEDED.
+alert_event,event_date,TEXT,yes,,date,no,,,Date of the event.
+alert_event,actor_id,TEXT,yes,,,no,,staff_user(user_id),Staff/system actor.
+audit_event,audit_event_id,TEXT,yes,,,yes,^AUD-\d{4}-\d{6}$,,AUD-<year>-nnnnnn in chronological order.
+audit_event,event_ts,TEXT,yes,,ISO-8601 UTC,no,Date part <= as_of_date.,,UTC timestamp (deterministic synthetic time of day).
+audit_event,entity_type,TEXT,yes,,,no,Known table name.,,Type of the affected record.
+audit_event,entity_id,TEXT,yes,,,no,"Resolves to an existing row (polymorphic reference, validated in code).",,Primary key of the affected record.
+audit_event,customer_id,TEXT,yes,,,no,,customer(customer_id),Customer the event belongs to.
+audit_event,action,TEXT,yes,,,no,Non-empty verb phrase.,,What happened.
+audit_event,actor_type,TEXT,yes,CUSTOMER|STAFF|SYSTEM,,no,,,Who acted.
+audit_event,actor_id,TEXT,yes,,,no,Non-empty.,,"Actor identifier (customer id, staff id or SYSTEM)."
+audit_event,details,TEXT,no,,,no,,,Short machine-readable detail.

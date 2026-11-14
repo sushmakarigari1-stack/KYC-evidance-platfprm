@@ -1,0 +1,1 @@
+[{"customer_type_id":"BUSINESS","description":"Legal entity account holder","requires_beneficial_owner":1},{"customer_type_id":"INDIVIDUAL","description":"Natural person account holder","requires_beneficial_owner":0}]

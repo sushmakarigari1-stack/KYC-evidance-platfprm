@@ -1,0 +1,3 @@
+customer_type_id,description,requires_beneficial_owner
+BUSINESS,Legal entity account holder,1
+INDIVIDUAL,Natural person account holder,0

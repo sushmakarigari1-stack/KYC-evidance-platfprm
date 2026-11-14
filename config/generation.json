@@ -1,0 +1,123 @@
+{
+  "default_seed": 20261022,
+  "default_as_of_date": "2026-11-13",
+  "profiles": {
+    "full": {
+      "customers": 8000,
+      "businesses": 1000,
+      "documents": 20000,
+      "reviews": 3000,
+      "anomalies_per_class": 40
+    },
+    "starter": {
+      "customers": 400,
+      "businesses": 50,
+      "documents": 1000,
+      "reviews": 150,
+      "anomalies_per_class": 3
+    }
+  },
+  "customers": {
+    "onboarding_max_age_days": 1825,
+    "onboarding_min_age_days": 14,
+    "evidence_window_days": 420,
+    "country_weights": {
+      "IN": 55,
+      "US": 10,
+      "GB": 8,
+      "SG": 7,
+      "DE": 5,
+      "AE": 8,
+      "BR": 4,
+      "NG": 3
+    },
+    "country_points": {
+      "IN": 10,
+      "US": 5,
+      "GB": 5,
+      "SG": 10,
+      "DE": 5,
+      "AE": 25,
+      "BR": 30,
+      "NG": 45
+    },
+    "pep_prob": 0.05,
+    "pep_points": 40,
+    "adverse_media_prob": 0.1,
+    "adverse_media_points": 25,
+    "cash_intensive_prob": {
+      "INDIVIDUAL": 0.18,
+      "BUSINESS": 0.25
+    },
+    "cash_intensive_points": 15,
+    "complex_structure_prob": 0.15,
+    "complex_structure_points": 10,
+    "business_base_points": 15,
+    "rerating_prob": 0.12
+  },
+  "documents": {
+    "incomplete_customer_prob": 0.06,
+    "submit_spread_days": 10,
+    "issue_age_max_days": {
+      "ID_PROOF": 3400,
+      "BUSINESS_REGISTRATION": 1700,
+      "TAX_PROOF": 2500,
+      "ADDRESS_PROOF": 45,
+      "SOURCE_OF_FUNDS": 45,
+      "OWNERSHIP_DECLARATION": 45
+    },
+    "expired_at_submission_prob": 0.01,
+    "name_variant_prob": {
+      "mismatch": 0.025,
+      "benign": 0.03
+    },
+    "quality_mean": 75,
+    "quality_sd": 20,
+    "verify_delay_days": [
+      1,
+      6
+    ],
+    "resubmit_after_reject_prob": 0.8,
+    "renew_expired_prob": 0.75,
+    "early_renew_prob": 0.08
+  },
+  "ownership": {
+    "missing_prob": 0.05,
+    "owner_count_weights": {
+      "1": 30,
+      "2": 40,
+      "3": 20,
+      "4": 10
+    },
+    "reuse_existing_owner_prob": 0.12,
+    "min_share_pct": 5
+  },
+  "reviews": {
+    "start_work_days": [
+      1,
+      10
+    ],
+    "work_days": [
+      3,
+      28
+    ],
+    "escalate_prob": 0.1,
+    "escalated_extra_days": [
+      4,
+      25
+    ],
+    "stuck_prob": 0.04
+  },
+  "alerts": {
+    "acknowledge_prob": 0.55,
+    "acknowledge_after_days": [
+      1,
+      9
+    ]
+  },
+  "staff": {
+    "operations_analysts": 12,
+    "compliance_reviewers": 4,
+    "administrators": 1
+  }
+}

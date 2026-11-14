@@ -1,0 +1,220 @@
+{
+ "evaluation": {
+  "integrity_or_reconciliation_defects": 0,
+  "missed": 0,
+  "overall_precision": 1.0,
+  "overall_recall": 1.0,
+  "passed": true,
+  "per_class": {
+   "APPROVED_WITH_MISSING_EVIDENCE": {
+    "detected": 3,
+    "injected": 3,
+    "missed": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "unexpected": 0
+   },
+   "DUPLICATE_DOCUMENT_ACROSS_CUSTOMERS": {
+    "detected": 3,
+    "injected": 3,
+    "missed": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "unexpected": 0
+   },
+   "EXPIRED_DOCUMENT_MARKED_VALID": {
+    "detected": 3,
+    "injected": 3,
+    "missed": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "unexpected": 0
+   },
+   "OWNERSHIP_OVER_100": {
+    "detected": 3,
+    "injected": 3,
+    "missed": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "unexpected": 0
+   },
+   "REVIEW_CLOSED_WITHOUT_RESOLUTION": {
+    "detected": 3,
+    "injected": 3,
+    "missed": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "unexpected": 0
+   }
+  },
+  "true_positives": 15,
+  "unexpected_business_findings": 0
+ },
+ "findings": [
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000133",
+   "detail": "APPROVED but MISSING_DOC:ADDRESS_PROOF",
+   "entity_id": "CUS-000133",
+   "entity_type": "customer",
+   "finding_id": "VFN-000001",
+   "related_entity_id": null,
+   "rule_code": "APPROVED_WITH_MISSING_EVIDENCE",
+   "severity": "CRITICAL"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000291",
+   "detail": "APPROVED but REJECTED_DOC:ADDRESS_PROOF",
+   "entity_id": "CUS-000291",
+   "entity_type": "customer",
+   "finding_id": "VFN-000002",
+   "related_entity_id": null,
+   "rule_code": "APPROVED_WITH_MISSING_EVIDENCE",
+   "severity": "CRITICAL"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000325",
+   "detail": "APPROVED but MISSING_DOC:ID_PROOF",
+   "entity_id": "CUS-000325",
+   "entity_type": "customer",
+   "finding_id": "VFN-000003",
+   "related_entity_id": null,
+   "rule_code": "APPROVED_WITH_MISSING_EVIDENCE",
+   "severity": "CRITICAL"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000054,CUS-000075",
+   "detail": "fingerprint shared by 2 unrelated customers",
+   "entity_id": "DOC-CUS-000054-002",
+   "entity_type": "document",
+   "finding_id": "VFN-000004",
+   "related_entity_id": "DOC-CUS-000075-001",
+   "rule_code": "DUPLICATE_DOCUMENT_ACROSS_CUSTOMERS",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000154,CUS-000230",
+   "detail": "fingerprint shared by 2 unrelated customers",
+   "entity_id": "DOC-CUS-000154-002",
+   "entity_type": "document",
+   "finding_id": "VFN-000005",
+   "related_entity_id": "DOC-CUS-000230-002",
+   "rule_code": "DUPLICATE_DOCUMENT_ACROSS_CUSTOMERS",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000176,CUS-000399",
+   "detail": "fingerprint shared by 2 unrelated customers",
+   "entity_id": "DOC-CUS-000176-001",
+   "entity_type": "document",
+   "finding_id": "VFN-000006",
+   "related_entity_id": "DOC-CUS-000399-001",
+   "rule_code": "DUPLICATE_DOCUMENT_ACROSS_CUSTOMERS",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000079",
+   "detail": "expiry 2026-08-31 < 2026-11-13",
+   "entity_id": "DOC-CUS-000079-002",
+   "entity_type": "document",
+   "finding_id": "VFN-000007",
+   "related_entity_id": null,
+   "rule_code": "EXPIRED_DOCUMENT_MARKED_VALID",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000163",
+   "detail": "expiry 2026-09-03 < 2026-11-13",
+   "entity_id": "DOC-CUS-000163-002",
+   "entity_type": "document",
+   "finding_id": "VFN-000008",
+   "related_entity_id": null,
+   "rule_code": "EXPIRED_DOCUMENT_MARKED_VALID",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000296",
+   "detail": "expiry 2026-10-25 < 2026-11-13",
+   "entity_id": "DOC-CUS-000296-001",
+   "entity_type": "document",
+   "finding_id": "VFN-000009",
+   "related_entity_id": null,
+   "rule_code": "EXPIRED_DOCUMENT_MARKED_VALID",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000007",
+   "detail": "effective ownership 112.00%",
+   "entity_id": "CUS-000007",
+   "entity_type": "customer",
+   "finding_id": "VFN-000010",
+   "related_entity_id": null,
+   "rule_code": "OWNERSHIP_OVER_100",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000271",
+   "detail": "effective ownership 124.00%",
+   "entity_id": "CUS-000271",
+   "entity_type": "customer",
+   "finding_id": "VFN-000011",
+   "related_entity_id": null,
+   "rule_code": "OWNERSHIP_OVER_100",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000276",
+   "detail": "effective ownership 121.00%",
+   "entity_id": "CUS-000276",
+   "entity_type": "customer",
+   "finding_id": "VFN-000012",
+   "related_entity_id": null,
+   "rule_code": "OWNERSHIP_OVER_100",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000089",
+   "detail": "COMPLETED with empty resolution",
+   "entity_id": "REV-CUS-000089-2026",
+   "entity_type": "review_case",
+   "finding_id": "VFN-000013",
+   "related_entity_id": null,
+   "rule_code": "REVIEW_CLOSED_WITHOUT_RESOLUTION",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000166",
+   "detail": "COMPLETED with empty resolution",
+   "entity_id": "REV-CUS-000166-2026",
+   "entity_type": "review_case",
+   "finding_id": "VFN-000014",
+   "related_entity_id": null,
+   "rule_code": "REVIEW_CLOSED_WITHOUT_RESOLUTION",
+   "severity": "HIGH"
+  },
+  {
+   "category": "BUSINESS_RULE",
+   "customer_id": "CUS-000365",
+   "detail": "COMPLETED with empty resolution",
+   "entity_id": "REV-CUS-000365-2026",
+   "entity_type": "review_case",
+   "finding_id": "VFN-000015",
+   "related_entity_id": null,
+   "rule_code": "REVIEW_CLOSED_WITHOUT_RESOLUTION",
+   "severity": "HIGH"
+  }
+ ]
+}
